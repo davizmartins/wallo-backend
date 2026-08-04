@@ -1,0 +1,25 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE - VS Code
+.vscode/
+
+# IDE - IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Variáveis de ambiente / credenciais
+.env
+application.properties
