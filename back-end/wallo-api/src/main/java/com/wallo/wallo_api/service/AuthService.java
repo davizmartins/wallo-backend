@@ -1,5 +1,6 @@
 package com.wallo.wallo_api.service;
 
+import com.wallo.wallo_api.exception.BusinessException;
 import com.wallo.wallo_api.dto.auth.AuthResponse;
 import com.wallo.wallo_api.dto.auth.LoginRequest;
 import com.wallo.wallo_api.dto.auth.RegisterRequest;
@@ -40,7 +41,7 @@ public class AuthService {
      */
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
 
         User user = new User();
