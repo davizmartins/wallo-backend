@@ -1,4 +1,4 @@
-package com.wallo.wallo_api.model;
+package com.wallo.wallo_api.enums;
 
 /**
  * Papéis de autorização reconhecidos pelo Spring Security.

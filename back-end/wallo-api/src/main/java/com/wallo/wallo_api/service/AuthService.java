@@ -5,7 +5,7 @@ import com.wallo.wallo_api.dto.auth.AuthResponse;
 import com.wallo.wallo_api.dto.auth.LoginRequest;
 import com.wallo.wallo_api.dto.auth.RegisterRequest;
 import com.wallo.wallo_api.model.User;
-import com.wallo.wallo_api.model.UserRole;
+import com.wallo.wallo_api.enums.UserRole;
 import com.wallo.wallo_api.repository.UserRepository;
 import com.wallo.wallo_api.security.JwtService;
 import com.wallo.wallo_api.security.UserDetailsImpl;

@@ -1,29 +1,25 @@
 package com.wallo.wallo_api.model;
 
-import com.wallo.wallo_api.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import com.wallo.wallo_api.enums.CategoryType;
 
 import java.time.LocalDateTime;
 
 /**
- * Usuário do sistema. Dono de contas, transações, categorias e metas.
- * O e-mail é usado como credencial de login.
+ * Categoria de transações (ex.: Alimentação, Salário).
+ * Pertence a um usuário: cada um gerencia suas próprias categorias.
  */
 @Entity
-@Table(name = "users")
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString(exclude = "password") // evita expor o hash da senha em logs
-public class User {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,19 +29,15 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email inválido")
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    // Armazena o hash BCrypt, nunca a senha em texto puro
-    @NotBlank(message = "Senha é obrigatória")
-    @Column(nullable = false)
-    private String password;
-
+    @NotNull(message = "Tipo é obrigatório")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role = UserRole.ROLE_USER;
+    private CategoryType type;
+
+    // Dono da categoria. LAZY: só carrega o User do banco quando realmente acessado.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
