@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,18 @@ public class GlobalExceptionHandler {
                 "Bad Request",
                 "Erro de validação",
                 fields
+        );
+        return ResponseEntity.badRequest().body(error);
+
+    }
+
+    /** JSON malformado ou corpo ilegível na requisição → 400 Bad Request. */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleUnreadableMessage(HttpMessageNotReadableException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                "Corpo da requisição inválido ou malformado"
         );
         return ResponseEntity.badRequest().body(error);
     }
