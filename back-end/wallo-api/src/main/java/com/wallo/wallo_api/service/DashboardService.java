@@ -5,7 +5,9 @@ import com.wallo.wallo_api.enums.TransactionType;
 import com.wallo.wallo_api.model.User;
 import com.wallo.wallo_api.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
+import com.wallo.wallo_api.dto.dashboard.MonthlySummary;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,5 +27,15 @@ public class DashboardService {
     public List<CategorySummary> summaryByCategory(User user, TransactionType type,
                                                    LocalDate start, LocalDate end) {
         return transactionRepository.sumByCategory(user, type, start, end);
+    }
+
+    /** Total de um tipo (receita/despesa) no período. */
+    public BigDecimal totalByType(User user, TransactionType type, LocalDate start, LocalDate end) {
+        return transactionRepository.sumByType(user, type, start, end);
+    }
+
+    /** Evolução mensal de um tipo. */
+    public List<MonthlySummary> monthlySummary(User user, TransactionType type) {
+        return transactionRepository.sumByMonth(user, type);
     }
 }

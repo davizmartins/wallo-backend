@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.wallo.wallo_api.dto.dashboard.MonthlySummary;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,5 +40,23 @@ public class DashboardController {
         List<CategorySummary> summary = dashboardService.summaryByCategory(
                 userDetails.getUser(), type, start, end);
         return ResponseEntity.ok(summary);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<BigDecimal> total(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam TransactionType type,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+
+        return ResponseEntity.ok(dashboardService.totalByType(userDetails.getUser(), type, start, end));
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<List<MonthlySummary>> monthly(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam TransactionType type) {
+
+        return ResponseEntity.ok(dashboardService.monthlySummary(userDetails.getUser(), type));
     }
 }
