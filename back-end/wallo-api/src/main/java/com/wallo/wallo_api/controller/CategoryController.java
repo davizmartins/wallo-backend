@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.annotations.ParameterObject;
 
 /**
  * Endpoints de gerenciamento de categorias do usuário autenticado.
@@ -38,8 +40,8 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<Page<CategoryResponse>> list(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Pageable pageable) {
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @ParameterObject Pageable pageable) {
 
         User user = userDetails.getUser();
         return ResponseEntity.ok(categoryService.list(user, pageable));
