@@ -63,7 +63,7 @@ com.wallo.wallo_api
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/davizmartins/SEU_REPOSITORIO.git
+   git clone https://github.com/davizmartins/wallo-backend.git
    ```
 
 2. Crie o banco de dados no PostgreSQL:
@@ -137,7 +137,7 @@ A URL base é `http://localhost:8080`. Exceto os endpoints de autenticação, to
 
 ## Status do projeto
 
-Backend em desenvolvimento. O frontend será desenvolvido em repositório próprio.
+Backend funcional e completo em seus recursos principais. Próximos passos: frontend em React e melhorias como filtros avançados e cobertura de testes.
 
 ---
 
