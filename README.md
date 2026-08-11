@@ -82,6 +82,7 @@ com.wallo.wallo_api
 
 4. Execute a aplicação:
    ```bash
+   cd back-end/wallo-api
    ./mvnw spring-boot:run
    ```
 
