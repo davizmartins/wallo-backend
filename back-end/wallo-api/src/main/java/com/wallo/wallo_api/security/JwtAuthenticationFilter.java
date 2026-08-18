@@ -37,30 +37,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // Sem cabeçalho Bearer: segue sem autenticar (rotas públicas passam, protegidas serão barradas)
+        // Sem cabeçalho Bearer: segue sem autenticar
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Remove o prefixo "Bearer " para obter o token puro
-        final String token = authHeader.substring(7);
-        final String email = jwtService.extractUsername(token);
+        try {
+            final String token = authHeader.substring(7);
+            final String email = jwtService.extractUsername(token);
 
-        // Só autentica se há email no token e ainda não há autenticação neste contexto
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            if (jwtService.isTokenValid(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        } catch (Exception e) {
+            // Token inválido ou expirado: apenas segue sem autenticar.
+            // A rota protegida rejeitará depois; rotas públicas passam normalmente.
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

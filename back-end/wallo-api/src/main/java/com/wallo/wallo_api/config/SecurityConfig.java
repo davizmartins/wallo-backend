@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Rotas de autenticação são públicas (cadastro/login)
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers( "/error").permitAll()
                         // Documentação Swagger/OpenAPI pública
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         // Qualquer outra rota exige usuário autenticado
