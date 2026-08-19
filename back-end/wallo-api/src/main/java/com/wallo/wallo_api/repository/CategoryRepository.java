@@ -2,8 +2,7 @@ package com.wallo.wallo_api.repository;
 
 import com.wallo.wallo_api.model.Category;
 import com.wallo.wallo_api.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.wallo.wallo_api.enums.CategoryType;
 
@@ -15,8 +14,7 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     /** Lista paginada das categorias de um usuário. */
-    Page<Category> findByUser(User user, Pageable pageable);
-
+    List<Category> findByUser(User user);
     /** Busca uma categoria por id, garantindo que pertence ao usuário. */
     Optional<Category> findByIdAndUser(Long id, User user);
 

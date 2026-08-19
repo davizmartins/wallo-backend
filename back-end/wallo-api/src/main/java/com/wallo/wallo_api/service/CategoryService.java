@@ -6,8 +6,7 @@ import com.wallo.wallo_api.exception.BusinessException;
 import com.wallo.wallo_api.model.Category;
 import com.wallo.wallo_api.model.User;
 import com.wallo.wallo_api.repository.CategoryRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,9 +37,11 @@ public class CategoryService {
     }
 
     /** Lista paginada das categorias do usuário. */
-    public Page<CategoryResponse> list(User user, Pageable pageable) {
-        return categoryRepository.findByUser(user, pageable)
-                .map(CategoryResponse::fromEntity);
+    public List<CategoryResponse> list(User user) {
+        return categoryRepository.findByUser(user)
+                .stream()
+                .map(CategoryResponse::fromEntity)
+                .toList();
     }
 
     /** Atualiza uma categoria existente do usuário. */

@@ -6,8 +6,7 @@ import com.wallo.wallo_api.model.User;
 import com.wallo.wallo_api.security.UserDetailsImpl;
 import com.wallo.wallo_api.service.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,12 +38,9 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryResponse>> list(
-            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @ParameterObject Pageable pageable) {
-
-        User user = userDetails.getUser();
-        return ResponseEntity.ok(categoryService.list(user, pageable));
+    public ResponseEntity<List<CategoryResponse>> list(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(categoryService.list(userDetails.getUser()));
     }
 
     @PutMapping("/{id}")
