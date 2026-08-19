@@ -1,9 +1,11 @@
 package com.wallo.wallo_api.controller;
 
 import com.wallo.wallo_api.dto.dashboard.CategorySummary;
+import com.wallo.wallo_api.dto.dashboard.MonthlySummary;
 import com.wallo.wallo_api.enums.TransactionType;
 import com.wallo.wallo_api.security.UserDetailsImpl;
 import com.wallo.wallo_api.service.DashboardService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.wallo.wallo_api.dto.dashboard.MonthlySummary;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,19 +33,17 @@ public class DashboardController {
 
     @GetMapping("/by-category")
     public ResponseEntity<List<CategorySummary>> byCategory(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam TransactionType type,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
 
-        List<CategorySummary> summary = dashboardService.summaryByCategory(
-                userDetails.getUser(), type, start, end);
-        return ResponseEntity.ok(summary);
+        return ResponseEntity.ok(dashboardService.summaryByCategory(userDetails.getUser(), type, start, end));
     }
 
     @GetMapping("/total")
     public ResponseEntity<BigDecimal> total(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam TransactionType type,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
@@ -54,7 +53,7 @@ public class DashboardController {
 
     @GetMapping("/monthly")
     public ResponseEntity<List<MonthlySummary>> monthly(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam TransactionType type) {
 
         return ResponseEntity.ok(dashboardService.monthlySummary(userDetails.getUser(), type));

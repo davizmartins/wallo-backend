@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.annotations.ParameterObject;
 
 /**
  * Endpoints de gerenciamento de contas do usuário autenticado.
@@ -36,8 +38,8 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<Page<AccountResponse>> list(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Pageable pageable) {
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @ParameterObject Pageable pageable) {
 
         return ResponseEntity.ok(accountService.list(userDetails.getUser(), pageable));
     }
