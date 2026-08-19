@@ -11,12 +11,11 @@ import com.wallo.wallo_api.model.User;
 import com.wallo.wallo_api.repository.AccountRepository;
 import com.wallo.wallo_api.repository.CategoryRepository;
 import com.wallo.wallo_api.repository.TransactionRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Regras de negócio de transações. Ao criar ou remover uma transação,
@@ -63,9 +62,11 @@ public class TransactionService {
         return TransactionResponse.fromEntity(saved);
     }
 
-    public Page<TransactionResponse> list(User user, Pageable pageable) {
-        return transactionRepository.findByUser(user, pageable)
-                .map(TransactionResponse::fromEntity);
+    public List<TransactionResponse> list(User user) {
+        return transactionRepository.findByUser(user)
+                .stream()
+                .map(TransactionResponse::fromEntity)
+                .toList();
     }
 
     @Transactional

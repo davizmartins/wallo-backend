@@ -2,8 +2,6 @@ package com.wallo.wallo_api.repository;
 
 import com.wallo.wallo_api.model.Transaction;
 import com.wallo.wallo_api.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.wallo.wallo_api.dto.dashboard.CategorySummary;
 import com.wallo.wallo_api.enums.TransactionType;
@@ -21,7 +19,7 @@ import java.math.BigDecimal;
  */
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    Page<Transaction> findByUser(User user, Pageable pageable);
+    List<Transaction> findByUser(User user);
 
     Optional<Transaction> findByIdAndUser(Long id, User user);
 

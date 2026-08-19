@@ -5,8 +5,7 @@ import com.wallo.wallo_api.dto.transaction.TransactionResponse;
 import com.wallo.wallo_api.security.UserDetailsImpl;
 import com.wallo.wallo_api.service.TransactionService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,11 +36,10 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TransactionResponse>> list(
-            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @ParameterObject Pageable pageable) {
+    public ResponseEntity<List<TransactionResponse>> list(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return ResponseEntity.ok(transactionService.list(userDetails.getUser(), pageable));
+        return ResponseEntity.ok(transactionService.list(userDetails.getUser()));
     }
 
     @DeleteMapping("/{id}")
