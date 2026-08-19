@@ -6,8 +6,7 @@ import com.wallo.wallo_api.exception.BusinessException;
 import com.wallo.wallo_api.model.Account;
 import com.wallo.wallo_api.model.User;
 import com.wallo.wallo_api.repository.AccountRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -39,9 +38,11 @@ public class AccountService {
         return AccountResponse.fromEntity(accountRepository.save(account));
     }
 
-    public Page<AccountResponse> list(User user, Pageable pageable) {
-        return accountRepository.findByUser(user, pageable)
-                .map(AccountResponse::fromEntity);
+    public List<AccountResponse> list(User user) {
+        return accountRepository.findByUser(user)
+                .stream()
+                .map(AccountResponse::fromEntity)
+                .toList();
     }
 
     public AccountResponse update(Long id, AccountRequest request, User user) {
