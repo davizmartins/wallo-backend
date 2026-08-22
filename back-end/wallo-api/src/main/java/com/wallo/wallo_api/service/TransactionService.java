@@ -41,6 +41,11 @@ public class TransactionService {
         // Busca conta e categoria garantindo que pertencem ao usuário
         Account account = accountRepository.findByIdAndUser(request.accountId(), user)
                 .orElseThrow(() -> new BusinessException("Conta não encontrada"));
+        // Dentro do create, para despesas, valida saldo suficiente
+        if (request.type() == TransactionType.EXPENSE
+                && account.getBalance().compareTo(request.amount()) < 0) {
+            throw new BusinessException("Saldo insuficiente na conta");
+        }
 
         Category category = categoryRepository.findByIdAndUser(request.categoryId(), user)
                 .orElseThrow(() -> new BusinessException("Categoria não encontrada"));
