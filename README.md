@@ -8,6 +8,9 @@
 
 API REST do **Wallo**, um sistema de controle financeiro pessoal. Permite ao usuário gerenciar contas, categorias e transações, com autenticação segura e dados agregados para dashboards.
 
+🔗 **API em produção:** https://wallo-backend-z0cb.onrender.com
+📚 **Documentação (Swagger):** https://wallo-backend-z0cb.onrender.com/swagger-ui.html
+
 > Interface web (React): [wallo-frontend](https://github.com/davizmartins/wallo-frontend)
 
 ## Funcionalidades
@@ -98,6 +101,16 @@ http://localhost:8080/swagger-ui.html
 | GET | `/dashboard/monthly` | Evolução mensal |
 
 As rotas (exceto `/auth/**` e a documentação) exigem o token JWT no cabeçalho `Authorization: Bearer <token>`.
+
+## Deploy
+
+O projeto está hospedado em produção:
+
+- **Frontend:** [Vercel](https://wallo-frontend.vercel.app)
+- **Backend:** [Render](https://wallo-backend-z0cb.onrender.com)
+- **Banco de dados:** PostgreSQL (Neon)
+
+> O backend usa o plano gratuito do Render, que suspende o serviço após um período de inatividade. O primeiro acesso pode levar até 1 minuto enquanto o servidor reinicia.
 
 ## Autor
 
