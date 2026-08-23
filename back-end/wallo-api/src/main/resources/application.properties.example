@@ -1,13 +1,4 @@
-spring.application.name=wallo-api
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/wallo
-spring.datasource.username=postgres
-spring.datasource.password=SUA_SENHA_AQUI
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-
-# JWT
-jwt.secret=SUA_CHAVE_SECRETA_AQUI_MINIMO_256_BITS
-jwt.expiration=86400000
+spring.datasource.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/wallo}
+spring.datasource.username=${DATABASE_USERNAME:postgres}
+spring.datasource.password=${DATABASE_PASSWORD:sua-senha-aqui}
+jwt.secret=${JWT_SECRET:sua-chave-secreta-longa-aqui}
