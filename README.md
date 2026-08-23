@@ -1,145 +1,104 @@
-# Wallo API
+# Wallo — API
 
-API REST para controle financeiro pessoal. Permite que cada usuário gerencie suas contas, categorias e transações (receitas e despesas), com autenticação segura e dados agregados para dashboards.
+![Java](https://img.shields.io/badge/Java-25-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue)
+![Maven](https://img.shields.io/badge/Maven-red)
+![JWT](https://img.shields.io/badge/Auth-JWT-purple)
 
-Projeto desenvolvido para fins de estudo e portfólio, com foco em boas práticas de arquitetura, segurança e organização de código.
+API REST do **Wallo**, um sistema de controle financeiro pessoal. Permite ao usuário gerenciar contas, categorias e transações, com autenticação segura e dados agregados para dashboards.
+
+> Interface web (React): [wallo-frontend](https://github.com/davizmartins/wallo-frontend)
 
 ## Funcionalidades
 
-- **Autenticação e autorização** com JWT e Spring Security (cadastro e login)
-- **Gestão de contas** (carteira, conta corrente, poupança, investimento) com saldo em precisão monetária
-- **Gestão de categorias** de receitas e despesas
-- **Registro de transações** que movimentam automaticamente o saldo da conta associada
-- **Dashboards** com dados agregados: total por categoria, total por tipo e evolução mensal
-- **Isolamento por usuário**: cada usuário acessa apenas os próprios dados
-- **Paginação** nas listagens
-- **Tratamento centralizado de erros** com respostas padronizadas
-- **Documentação interativa** via Swagger/OpenAPI
+- Autenticação e cadastro de usuários com JWT (tokens stateless)
+- Senhas criptografadas com BCrypt
+- CRUD de categorias, contas e transações, isolados por usuário
+- Movimentação automática de saldo ao registrar ou excluir transações
+- Validação de saldo suficiente antes de registrar despesas
+- Endpoints de agregação para dashboards (total por tipo, por categoria e evolução mensal)
+- Tratamento centralizado de erros com respostas padronizadas
+- Documentação interativa via Swagger/OpenAPI
 
 ## Tecnologias
 
 - **Java 25** e **Spring Boot 4.1**
-- **Spring Security** + **JWT** (jjwt) para autenticação
-- **Spring Data JPA** / Hibernate para persistência
+- **Spring Security** com autenticação JWT (jjwt)
+- **Spring Data JPA** / Hibernate
 - **PostgreSQL** como banco de dados
-- **Bean Validation** para validação de entrada
-- **springdoc-openapi** (Swagger) para documentação
-- **Maven** para build e gestão de dependências
+- **Maven** para build e dependências
+- **springdoc-openapi** para documentação Swagger
 
 ## Arquitetura
 
-O projeto segue uma arquitetura em camadas, com separação clara de responsabilidades:
+O projeto segue uma organização em camadas:
 
-```
-com.wallo.wallo_api
-├── config/       Configurações (Spring Security, CORS, OpenAPI)
-├── controller/   Endpoints REST
-├── dto/          Objetos de transferência de dados (records)
-├── enums/        Enumerações de domínio
-├── exception/    Tratamento centralizado de exceções
-├── model/        Entidades JPA
-├── repository/   Acesso a dados (Spring Data JPA)
-├── security/     Filtro JWT e integração com o Spring Security
-└── service/      Regras de negócio
-```
+- `controller` — endpoints REST
+- `service` — regras de negócio
+- `repository` — acesso a dados (Spring Data JPA)
+- `model` — entidades JPA
+- `dto` — objetos de transferência de dados (records)
+- `security` — configuração de autenticação e filtro JWT
+- `exception` — tratamento centralizado de erros
+- `config` — configurações gerais (CORS, Swagger)
 
-**Decisões de projeto relevantes:**
+Valores monetários usam `BigDecimal` para precisão. A autenticação é stateless: cada requisição carrega o token JWT, sem sessão no servidor.
 
-- Valores monetários em `BigDecimal` para evitar imprecisão de ponto flutuante
-- Operações que alteram saldo são anotadas com `@Transactional`, garantindo atomicidade entre o registro da transação e a atualização da conta
-- DTOs implementados como `record` (imutáveis) para entrada e saída
-- Injeção de dependências via construtor
-- Todas as consultas escopadas por usuário, garantindo isolamento de dados
-
-## Como executar
+## Como executar localmente
 
 ### Pré-requisitos
 
 - Java 25
-- Maven
-- PostgreSQL
+- PostgreSQL 17
+- Maven (ou o wrapper `./mvnw` incluído)
 
 ### Passos
 
 1. Clone o repositório:
    ```bash
    git clone https://github.com/davizmartins/wallo-backend.git
+   cd wallo-backend
    ```
 
-2. Crie o banco de dados no PostgreSQL:
-   ```sql
-   CREATE DATABASE wallo;
-   ```
+2. Crie um banco de dados PostgreSQL chamado `wallo`.
 
-3. Configure o `application.properties`. Use o `application.properties.example` como base e preencha suas credenciais:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/wallo
-   spring.datasource.username=SEU_USUARIO
-   spring.datasource.password=SUA_SENHA
-   jwt.secret=SUA_CHAVE_SECRETA_MINIMO_256_BITS
-   jwt.expiration=86400000
+3. Configure as credenciais. Copie o arquivo de exemplo e ajuste com seus dados:
+   ```bash
+   cp src/main/resources/application.properties.example src/main/resources/application.properties
    ```
+   Edite `application.properties` com a URL, usuário e senha do seu PostgreSQL, além da chave secreta do JWT.
 
 4. Execute a aplicação:
    ```bash
-   cd back-end/wallo-api
    ./mvnw spring-boot:run
    ```
 
-5. Acesse a documentação Swagger:
-   ```
-   http://localhost:8080/swagger-ui.html
-   ```
+5. A API estará disponível em `http://localhost:8080`.
+
+### Documentação da API
+
+Com a aplicação rodando, acesse a documentação interativa em:
+
+```
+http://localhost:8080/swagger-ui.html
+```
 
 ## Principais endpoints
 
-A URL base é `http://localhost:8080`. Exceto os endpoints de autenticação, todos exigem um token JWT no cabeçalho `Authorization: Bearer <token>`.
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/auth/register` | Cadastro de usuário |
+| POST | `/auth/login` | Login (retorna token JWT) |
+| GET/POST/PUT/DELETE | `/categories` | Gerenciamento de categorias |
+| GET/POST/PUT/DELETE | `/accounts` | Gerenciamento de contas |
+| GET/POST/DELETE | `/transactions` | Gerenciamento de transações |
+| GET | `/dashboard/total` | Total por tipo e período |
+| GET | `/dashboard/by-category` | Total agrupado por categoria |
+| GET | `/dashboard/monthly` | Evolução mensal |
 
-### Autenticação
+As rotas (exceto `/auth/**` e a documentação) exigem o token JWT no cabeçalho `Authorization: Bearer <token>`.
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/auth/register` | Cadastra um novo usuário |
-| POST | `/auth/login` | Autentica e retorna o token JWT |
-
-### Contas
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/accounts` | Cria uma conta |
-| GET | `/accounts` | Lista as contas (paginado) |
-| PUT | `/accounts/{id}` | Atualiza uma conta |
-| DELETE | `/accounts/{id}` | Remove uma conta |
-
-### Categorias
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/categories` | Cria uma categoria |
-| GET | `/categories` | Lista as categorias (paginado) |
-| PUT | `/categories/{id}` | Atualiza uma categoria |
-| DELETE | `/categories/{id}` | Remove uma categoria |
-
-### Transações
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/transactions` | Registra uma transação e atualiza o saldo |
-| GET | `/transactions` | Lista as transações (paginado) |
-| DELETE | `/transactions/{id}` | Remove uma transação e reverte o saldo |
-
-### Dashboard
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/dashboard/by-category` | Total por categoria em um período |
-| GET | `/dashboard/total` | Total por tipo (receita/despesa) em um período |
-| GET | `/dashboard/monthly` | Evolução mensal por tipo |
-
-## Status do projeto
-
-Backend funcional e completo em seus recursos principais. Próximos passos: frontend em React e melhorias como filtros avançados e cobertura de testes.
-
----
+## Autor
 
 Desenvolvido por [Davi Martins](https://github.com/davizmartins).
